@@ -554,7 +554,13 @@
   });
 
   const actions = {
-    'cover-enter': () => { S.cover = false; Sfx.play('jingle'); render(); },
+    'cover-enter': () => {
+      if (!S.cover) return;
+      S.cover = false; Sfx.play('jingle'); render();
+      // 封面层挂在body下，主页面重绘后要把它淡出并移除
+      const c = document.querySelector('.cover');
+      if (c) { c.style.pointerEvents = 'none'; c.style.transition = 'opacity .25s ease-in'; c.style.opacity = '0'; setTimeout(() => c.remove(), 260); }
+    },
     nav: (el) => { S.tab = el.dataset.tab; S.openRow = null; S.detail = null; S.editing = null; S.manageOpen = false; Sfx.play('tick'); render(); },
     'sound-toggle': () => { S.sound = !S.sound; Sfx.enabled = S.sound; Sfx.play('pop'); render(); },
     chef: (el) => say(el.dataset.who),
