@@ -1,0 +1,5 @@
+# 本地备份文件
+*.json.bak
+.DS_Store
+Thumbs.db
+.vscode/

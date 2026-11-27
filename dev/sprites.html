@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>像素小人预览 · 望江吃啥子</title>
+  <style>
+    body{margin:0;padding:24px;background:#FBEFF0;color:#6E5F52;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+    h1{font-size:18px;margin:0 0 4px}p.tip{font-size:12px;color:#8A7A6D;margin:0 0 20px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+    .cell{border:2px solid #8A7266;background:#FFF9F4;box-shadow:4px 4px rgba(138,114,102,.55);padding:12px;display:flex;align-items:center;gap:16px}
+    .cell .meta{font-size:12px}.cell .meta b{display:block;font-size:13px}
+    .cell canvas{image-rendering:pixelated;background:repeating-conic-gradient(#f3e6dc 0 25%,#fbf3ec 0 50%) 0 0/16px 16px;border:1px solid #E3D5C9}
+  </style>
+</head>
+<body>
+  <h1>像素小人预览</h1>
+  <p class="tip">改完assets/js/pixel.js刷新本页即可看效果。每格：角色 / 动作，放大8倍，自动循环播放。</p>
+  <div class="grid" id="grid"></div>
+  <script src="../assets/js/pixel.js"></script>
+  <script>
+    const actions=['bob','wave','dance','spin','eat','hungry','boing','jump','shy','surprise','cheer'];
+    const names={bob:'待机',wave:'挥手',dance:'跳舞',spin:'转圈',eat:'干饭',hungry:'饿了',boing:'弹跳',jump:'跳跃',shy:'害羞',surprise:'惊讶',cheer:'欢呼'};
+    // 支持 ?action=wave&freeze=0&scale=12 只看某个动作的某一帧
+    const Q=new URLSearchParams(location.search);
+    const only=Q.get('action');
+    const scale=Number(Q.get('scale'))||8, freeze=Q.get('freeze')==null?null:Number(Q.get('freeze'));
+    const g=document.getElementById('grid');
+    [['female','璇璇'],['male','仔仔']].forEach(([who,label])=>actions.filter(a=>!only||a===only).forEach(a=>{
+      const cell=document.createElement('div');cell.className='cell';
+      const host=document.createElement('div');cell.appendChild(host);
+      cell.insertAdjacentHTML('beforeend',`<div class="meta"><b>${label}</b>${names[a]} <span style="color:#B5A89B">(${a})</span></div>`);
+      g.appendChild(cell);new PixelSprite(host,who,{scale,action:a,freeze});
+    }));
+  </script>
+</body>
+</html>
